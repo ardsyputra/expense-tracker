@@ -1,0 +1,15 @@
+.env
+
+bin/
+
+tmp/
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+coverage.out
+
+.vscode/
