@@ -1,0 +1,17 @@
+cd "D:\Project\golang project\expense-tracker"
+
+@(
+    ".env"
+    ".env.*"
+    "!.env.example"
+    "node_modules/"
+    ".next/"
+    ".vercel/"
+    "*.tsbuildinfo"
+    "next-env.d.ts"
+    "dist/"
+    "build/"
+    "bin/"
+    "tmp/"
+    "*.log"
+) | Set-Content -Encoding utf8 .gitignore

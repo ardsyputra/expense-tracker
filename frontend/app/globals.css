@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --background: #f5f1e8;
+  --foreground: #171717;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #111315;
+  --foreground: #f4f4f5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), sans-serif;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+:root[data-theme="dark"] [class~="bg-white"] {
+  background-color: #1c1f22 !important;
+}
+
+:root[data-theme="dark"] [class~="bg-[#f5f1e8]"] {
+  background-color: #111315 !important;
+}
+
+:root[data-theme="dark"] [class~="bg-[#c8ff00]"],
+:root[data-theme="dark"] [class~="bg-[#c8ff00]"] * {
+  color: #171717 !important;
+}
+
+:root[data-theme="dark"] [class~="text-[#171717]"] {
+  color: #f4f4f5 !important;
+}
+
+:root[data-theme="dark"] [class~="bg-[#c8ff00]"][class~="text-[#171717]"],
+:root[data-theme="dark"] [class~="bg-[#ff6b6b]"][class~="text-[#171717]"] {
+  color: #171717 !important;
+}
+
+:root[data-theme="dark"] [class~="border-[#171717]"] {
+  border-color: #45494e !important;
+}
+
+:root[data-theme="dark"] [class~="text-gray-400"],
+:root[data-theme="dark"] [class~="text-gray-500"] {
+  color: #a1a1aa !important;
+}
+
+:root[data-theme="dark"] [class~="placeholder:text-gray-400"]::placeholder {
+  color: #71717a !important;
+}
+
+:root[data-theme="dark"] [class~="focus:bg-white"]:focus {
+  background-color: #25282b !important;
+}
+
+:root[data-theme="light"] aside[class~="bg-[#171717]"] {
+  background-color: #ffffff;
+  border-color: #d4d4d8;
+  color: #171717;
+}
+
+:root[data-theme="light"] aside [class~="text-white"] {
+  color: #171717;
+}
+
+:root[data-theme="light"] aside [class~="text-white/40"],
+:root[data-theme="light"] aside [class~="text-white/50"],
+:root[data-theme="light"] aside [class~="text-white/60"] {
+  color: #52525b;
+}
+
+:root[data-theme="light"] aside [class~="bg-white/5"] {
+  background-color: #f5f1e8;
+}
+
+:root[data-theme="light"] aside [class~="border-white/10"] {
+  border-color: #d4d4d8;
+}
+
+:root[data-theme="light"] aside [class~="hover:bg-white/5"]:hover {
+  background-color: #f5f1e8;
+}
+
+:root[data-theme="light"] aside [class~="hover:text-white"]:hover {
+  color: #171717;
+}
+
+:root[data-theme="light"] aside [class~="border-white"] {
+  border-color: #171717;
+}
+
+@media (max-width: 1023px) {
+  body:has([data-mobile-nav]) main {
+    padding-bottom: 5.5rem;
+  }
+}

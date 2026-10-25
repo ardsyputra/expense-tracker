@@ -1,15 +1,32 @@
+@'
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
 
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Build outputs
+dist/
+build/
 bin/
-
 tmp/
 
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+# Logs
+*.log
+npm-debug.log*
 
-coverage.out
-
+# Editor and OS files
 .vscode/
+.idea/
+.DS_Store
+Thumbs.db
+'@ | Set-Content .\.gitignore

@@ -15,32 +15,47 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
+
+	// Load .env
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("Warning: .env tidak ditemukan")
+		log.Println("Warning: .env file tidak ditemukan")
 	}
 
+	// Ambil konfigurasi dari .env
+	host := os.Getenv("DB_HOST")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+	port := os.Getenv("DB_PORT")
+
+	// PostgreSQL DSN
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
+    "host=%s user=%s password=%s dbname=%s port=%s sslmode=require",
+    host, user, password, dbname, port,
 	)
 
+	// Connect database
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
 	if err != nil {
-		log.Fatal("Gagal koneksi database:", err)
+		log.Fatal("Database connection failed:", err)
 	}
 
-	fmt.Println("Database connected successfully!")
+	fmt.Println("Database connected successfully")
 
-	// Auto Migration
-	err = DB.AutoMigrate(&models.User{})
+	// =========================
+	// AUTO MIGRATION
+	// =========================
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Category{},
+		&models.Transaction{},
+	)
+
 	if err != nil {
 		log.Fatal("Migration failed:", err)
 	}
 
-	fmt.Println("Migration completed successfully!")
+	fmt.Println("Migration completed successfully")
 }
