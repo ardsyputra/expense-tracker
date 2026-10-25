@@ -30,6 +30,11 @@ body {
   background-color: #1c1f22 !important;
 }
 
+:root[data-theme="dark"] [data-bright-icon-backgrounds] [class~="bg-white"]:has(> svg) {
+  background-color: #ffffff !important;
+  color: #171717 !important;
+}
+
 :root[data-theme="dark"] [class~="bg-[#f5f1e8]"] {
   background-color: #111315 !important;
 }
@@ -53,16 +58,39 @@ body {
 }
 
 :root[data-theme="dark"] [class~="text-gray-400"],
-:root[data-theme="dark"] [class~="text-gray-500"] {
+:root[data-theme="dark"] [class~="text-gray-500"],
+:root[data-theme="dark"] [class~="text-gray-700"],
+:root[data-theme="dark"] [class~="text-white/40"],
+:root[data-theme="dark"] [class~="text-white/50"],
+:root[data-theme="dark"] [class~="text-white/60"] {
   color: #a1a1aa !important;
 }
 
+:root[data-theme="dark"] [class~="text-white/70"] {
+  color: #d4d4d8 !important;
+}
+
 :root[data-theme="dark"] [class~="placeholder:text-gray-400"]::placeholder {
-  color: #71717a !important;
+  color: #a1a1aa !important;
+}
+
+:root[data-theme="dark"] [class~="placeholder:text-gray-500"]::placeholder {
+  color: #a1a1aa !important;
+}
+
+:root[data-theme="dark"] [class~="border-[#171717]/10"],
+:root[data-theme="dark"] [class~="border-[#171717]/20"],
+:root[data-theme="dark"] [class~="border-white/20"] {
+  border-color: #45494e !important;
 }
 
 :root[data-theme="dark"] [class~="focus:bg-white"]:focus {
   background-color: #25282b !important;
+}
+
+:root[data-theme="dark"] :focus-visible {
+  outline: 2px solid #c8ff00;
+  outline-offset: 2px;
 }
 
 :root[data-theme="light"] aside[class~="bg-[#171717]"] {

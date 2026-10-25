@@ -375,7 +375,7 @@ export default function PageTransaction() {
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#f5f1e8] text-[#171717]">
+    <main data-bright-icon-backgrounds className="min-h-screen bg-[#f5f1e8] text-[#171717]">
 
       {/* =================================================
           MAIN LAYOUT
