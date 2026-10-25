@@ -3,10 +3,5 @@ build:
   system: docker
 
 dockerfile_path: backend/Dockerfile
-working_directory: /backend
-build_context_directory: /backend
-
-health_check:
-  type: tcp
-  interval_in_seconds: 10
-
+working_directory: /
+build_context_directory: backend
