@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import Sidebar from "@/components/sidebar";
+import { getApiUrl } from "@/lib/api";
 
 type Category = {
   ID: number;
@@ -27,17 +28,6 @@ type Category = {
   type?: string;
   user_id?: number;
 };
-
-/*
-|--------------------------------------------------------------------------
-| BACKEND GO
-|--------------------------------------------------------------------------
-|
-| Backend kamu berjalan di:
-| http://localhost:8080
-|
-*/
-const API_URL = "http://localhost:8081";
 
 function EditTransactionContent() {
   const router = useRouter();
@@ -113,7 +103,7 @@ function EditTransactionContent() {
         }
 
         const response = await fetch(
-          `${API_URL}/api/categories`,
+          getApiUrl("/api/categories"),
           {
             method: "GET",
             headers: {
@@ -159,7 +149,7 @@ function EditTransactionContent() {
 
         if (err instanceof TypeError) {
           setError(
-            `Tidak dapat terhubung ke backend Go di ${API_URL}.`
+            "Tidak dapat terhubung ke backend API. Periksa URL backend dan konfigurasi CORS."
           );
         } else if (err instanceof Error) {
           setError(err.message);
@@ -196,7 +186,7 @@ function EditTransactionContent() {
         }
 
         const response = await fetch(
-          `${API_URL}/api/transactions/${transactionId}`,
+          getApiUrl(`/api/transactions/${transactionId}`),
           {
             method: "GET",
             headers: {
@@ -333,7 +323,7 @@ function EditTransactionContent() {
 
         if (err instanceof TypeError) {
           setError(
-            `Tidak dapat terhubung ke backend Go di ${API_URL}. Pastikan server Go sedang berjalan.`
+            "Tidak dapat terhubung ke backend API. Periksa URL backend dan konfigurasi CORS."
           );
         } else if (err instanceof Error) {
           setError(err.message);
@@ -590,7 +580,7 @@ function EditTransactionContent() {
       setSaving(true);
 
       const response = await fetch(
-        `${API_URL}/api/transactions/${transactionId}`,
+        getApiUrl(`/api/transactions/${transactionId}`),
         {
           method: "PUT",
 
@@ -660,7 +650,7 @@ function EditTransactionContent() {
 
       if (err instanceof TypeError) {
         setError(
-          `Tidak dapat terhubung ke backend Go di ${API_URL}. Pastikan server Go sedang berjalan.`
+          "Tidak dapat terhubung ke backend API. Periksa URL backend dan konfigurasi CORS."
         );
       } else if (err instanceof Error) {
         setError(err.message);

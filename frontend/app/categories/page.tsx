@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import { getApiUrl } from "@/lib/api";
 
 type Category = {
   ID: number;
@@ -24,8 +25,6 @@ type Category = {
   type: string;
   user_id?: number;
 };
-
-const API_URL = "http://localhost:8081";
 
 export default function CategoriesPage() {
   const router = useRouter();
@@ -68,7 +67,7 @@ export default function CategoriesPage() {
       }
 
       const response = await fetch(
-        `${API_URL}/api/categories`,
+        getApiUrl("/api/categories"),
         {
           method: "GET",
           headers: {
@@ -244,7 +243,7 @@ export default function CategoriesPage() {
 
       if (!editingCategory) {
         response = await fetch(
-          `${API_URL}/api/categories`,
+          getApiUrl("/api/categories"),
           {
             method: "POST",
             headers: {
@@ -262,7 +261,7 @@ export default function CategoriesPage() {
 
       else {
         response = await fetch(
-          `${API_URL}/api/categories/${editingCategory.ID}`,
+          getApiUrl(`/api/categories/${editingCategory.ID}`),
           {
             method: "PUT",
             headers: {
@@ -335,7 +334,7 @@ export default function CategoriesPage() {
       }
 
       const response = await fetch(
-        `${API_URL}/api/categories/${category.ID}`,
+        getApiUrl(`/api/categories/${category.ID}`),
         {
           method: "DELETE",
           headers: {

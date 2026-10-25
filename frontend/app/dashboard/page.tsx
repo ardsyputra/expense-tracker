@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import { getApiUrl } from "@/lib/api";
 
 type Category = {
   ID: number;
@@ -75,7 +76,7 @@ export default function DashboardPage() {
         }
 
         const response = await fetch(
-          "http://localhost:8081/api/transactions",
+          getApiUrl("/api/transactions"),
           {
             method: "GET",
             headers: {
@@ -86,7 +87,7 @@ export default function DashboardPage() {
         );
 
         const summaryResponse = await fetch(
-          "http://localhost:8081/api/dashboard/summary",
+          getApiUrl("/api/dashboard/summary"),
           {
             headers: {
               Authorization: `Bearer ${token}`,

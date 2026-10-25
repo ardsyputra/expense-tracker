@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import { getApiUrl } from "@/lib/api";
 
 type Category = {
   ID: number;
@@ -42,12 +43,6 @@ type Transaction = {
   category?: Category;
 };
 
-// =====================================================
-// BACKEND URL
-// =====================================================
-
-const API_URL = "http://localhost:8081";
-
 export default function PageTransaction() {
   const router = useRouter();
 
@@ -72,7 +67,7 @@ export default function PageTransaction() {
       }
 
       const response = await fetch(
-        `${API_URL}/api/transactions`,
+        getApiUrl("/api/transactions"),
         {
           method: "GET",
           headers: {
@@ -129,7 +124,7 @@ export default function PageTransaction() {
 
       if (err instanceof TypeError) {
         setError(
-          `Tidak dapat terhubung ke backend Go di ${API_URL}. Pastikan server Go sedang berjalan.`
+          "Tidak dapat terhubung ke backend API. Periksa URL backend dan konfigurasi CORS."
         );
       } else if (err instanceof Error) {
         setError(err.message);
@@ -285,7 +280,7 @@ export default function PageTransaction() {
       }
 
       const response = await fetch(
-        `${API_URL}/api/transactions/${id}`,
+        getApiUrl(`/api/transactions/${id}`),
         {
           method: "DELETE",
           headers: {

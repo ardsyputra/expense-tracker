@@ -1,4 +1,18 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:8081"
+    : "");
+
+export function getApiUrl(endpoint: string) {
+  if (!API_URL) {
+    throw new Error(
+      "URL API belum dikonfigurasi. Atur NEXT_PUBLIC_API_URL lalu deploy ulang frontend."
+    );
+  }
+
+  return `${API_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+}
 
 // =========================
 // TYPES
@@ -49,7 +63,7 @@ async function request<T>(
 endpoint: string,
 options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-const url = `${API_URL}${endpoint}`;
+const url = getApiUrl(endpoint);
 
 console.log("================================");
 console.log("API REQUEST");

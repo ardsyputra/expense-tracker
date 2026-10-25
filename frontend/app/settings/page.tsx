@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import { getApiUrl } from "@/lib/api";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function SettingsPage() {
       if (token) {
         void (async () => {
           try {
-            const response = await fetch("http://localhost:8081/api/profile", {
+            const response = await fetch(getApiUrl("/api/profile"), {
               headers: { Authorization: `Bearer ${token}` },
               cache: "no-store",
             });
@@ -122,7 +123,7 @@ export default function SettingsPage() {
 
     setSavingProfile(true);
     try {
-      const response = await fetch("http://localhost:8081/api/profile", {
+      const response = await fetch(getApiUrl("/api/profile"), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -197,7 +198,7 @@ export default function SettingsPage() {
     try {
       /*
        * Endpoint:
-       * PUT http://localhost:8081/api/profile
+       * PUT /api/profile
        *
        * Sesuai backend Go:
        *
@@ -210,7 +211,7 @@ export default function SettingsPage() {
        */
 
       const response = await fetch(
-        "http://localhost:8081/api/profile",
+        getApiUrl("/api/profile"),
         {
           method: "PUT",
 

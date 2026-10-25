@@ -11,6 +11,7 @@ import {
   Wallet,
   X,
 } from "lucide-react";
+import { getApiUrl } from "@/lib/api";
 
 type Category = {
   ID: number;
@@ -42,12 +43,6 @@ export default function NewTransactionPage() {
   const [error, setError] = useState("");
 
   // =====================================================
-  // API URL
-  // =====================================================
-
-  const API_URL = "http://localhost:8081";
-
-  // =====================================================
   // GET CATEGORIES
   // =====================================================
 
@@ -65,7 +60,7 @@ export default function NewTransactionPage() {
         }
 
         const response = await fetch(
-          `${API_URL}/api/categories`,
+          getApiUrl("/api/categories"),
           {
             method: "GET",
             headers: {
@@ -204,7 +199,7 @@ export default function NewTransactionPage() {
       console.log("Sending transaction:", body);
 
       const response = await fetch(
-        `${API_URL}/api/transactions`,
+        getApiUrl("/api/transactions"),
         {
           method: "POST",
           headers: {
