@@ -4,4 +4,4 @@ build:
 
 dockerfile_path: backend/Dockerfile
 working_directory: /
-build_context_directory: backend
+build_context_directory: /
