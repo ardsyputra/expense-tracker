@@ -112,19 +112,15 @@ export default function Sidebar() {
         {/* MONTHLY BUDGET */}
         <div className="mb-5 rounded-2xl border-2 border-white/10 bg-white/5 p-4">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/40">
-            Monthly budget
+            Budget bulanan
           </p>
 
-          <p className="mt-2 text-2xl font-black">
-            Rp 2.7M
+          <p className="mt-2 text-sm font-bold">
+            Belum tersedia
           </p>
 
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-            <div className="h-full w-[68%] rounded-full bg-[#c8ff00]" />
-          </div>
-
-          <p className="mt-2 text-xs text-white/40">
-            68% used this month
+          <p className="mt-1 text-xs text-white/60">
+            Fitur pengaturan budget belum tersedia.
           </p>
         </div>
 
