@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  AlertTriangle,
   Bell,
+  CheckCircle2,
   ChevronDown,
   LogOut,
   Plus,
@@ -53,6 +55,152 @@ type MonthlyBudget = {
   monthly_expense: number;
   configured: boolean;
 };
+
+type DashboardAlert = {
+  id: string;
+  title: string;
+  message: string;
+  action: string;
+  href: string;
+  tone: "warning" | "danger";
+};
+
+function NotificationCenter({
+  alerts,
+  loading,
+  unavailable,
+  mobile = false,
+  onNavigate,
+}: {
+  alerts: DashboardAlert[];
+  loading: boolean;
+  unavailable: boolean;
+  mobile?: boolean;
+  onNavigate: (href: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsOpen(false);
+    }
+
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [isOpen]);
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        aria-label={
+          alerts.length
+            ? `Notifikasi, ${alerts.length} peringatan`
+            : "Notifikasi"
+        }
+        aria-expanded={isOpen}
+        aria-controls="dashboard-notifications"
+        onClick={() => setIsOpen((open) => !open)}
+        className="relative flex h-11 w-11 items-center justify-center rounded-xl border-2 border-[#171717] bg-white transition hover:-translate-y-1 hover:shadow-[3px_3px_0_#c8ff00]"
+      >
+        <Bell size={18} />
+        {alerts.length > 0 && (
+          <span
+            aria-hidden="true"
+            className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-[#ff6b6b] px-1 text-[10px] font-black text-[#171717]"
+          >
+            {alerts.length > 9 ? "9+" : alerts.length}
+          </span>
+        )}
+      </button>
+
+      {isOpen && (
+        <section
+          id="dashboard-notifications"
+          aria-label="Notifikasi keuangan"
+          className={`${mobile ? "fixed right-4 top-20" : "absolute right-0 top-14"} z-50 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border-2 border-[#171717] bg-white text-[#171717] shadow-[5px_5px_0_#171717]`}
+        >
+          <div className="flex items-center justify-between border-b-2 border-[#171717]/10 px-4 py-3">
+            <div>
+              <h2 className="text-sm font-black">Notifikasi</h2>
+              <p className="text-[11px] text-gray-500">
+                Peringatan berdasarkan kondisi keuanganmu
+              </p>
+            </div>
+            <button
+              type="button"
+              aria-label="Tutup notifikasi"
+              onClick={() => setIsOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          {loading || unavailable ? (
+            <p role="status" className="px-4 py-6 text-center text-xs leading-5 text-gray-500">
+              {loading
+                ? "Memuat status keuangan..."
+                : "Notifikasi belum dapat dimuat. Coba muat ulang halaman."}
+            </p>
+          ) : alerts.length ? (
+            <ul className="max-h-[60vh] divide-y divide-[#171717]/10 overflow-y-auto">
+              {alerts.map((alert) => (
+                <li key={alert.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false);
+                      onNavigate(alert.href);
+                    }}
+                    className="flex w-full gap-3 px-4 py-4 text-left transition hover:bg-[#f5f1e8]"
+                  >
+                    <span
+                      className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                        alert.tone === "danger"
+                          ? "bg-[#ff6b6b]"
+                          : "bg-[#c8ff00]"
+                      }`}
+                    >
+                      <AlertTriangle size={17} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-xs font-black">
+                        {alert.title}
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-gray-600">
+                        {alert.message}
+                      </span>
+                      <span className="mt-2 block text-xs font-black text-[#5b3fba]">
+                        {alert.action} →
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="px-5 py-7 text-center">
+              <CheckCircle2
+                size={24}
+                className="mx-auto text-[#5b3fba]"
+              />
+              <p className="mt-2 text-sm font-black">
+                Belum ada peringatan
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                Peringatan akan muncul jika ada transaksi yang perlu dicatat
+                atau budget mendekati batas.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -293,6 +441,47 @@ export default function DashboardPage() {
     : 0;
   const budgetProgress = Math.min(budgetPercent, 100);
   const budgetRemaining = monthlyBudget.amount - monthlyBudget.monthly_expense;
+  const dashboardAlerts: DashboardAlert[] = [];
+
+  if (!loadingTransactions && !error && transactions.length === 0) {
+    dashboardAlerts.push({
+      id: "first-transaction",
+      title: "Belum ada transaksi",
+      message: "Catat transaksi pertamamu agar ringkasan keuangan mulai terisi.",
+      action: "Tambah transaksi",
+      href: "/transactions/tambahtransaction",
+      tone: "warning",
+    });
+  }
+
+  if (!loadingTransactions && !error && !monthlyBudget.configured) {
+    dashboardAlerts.push({
+      id: "budget-not-configured",
+      title: "Budget bulanan belum diatur",
+      message: "Tentukan batas pengeluaran bulanan agar pemakaian budget bisa dipantau.",
+      action: "Atur budget",
+      href: "/settings#monthly-budget",
+      tone: "warning",
+    });
+  } else if (!loadingTransactions && !error && budgetPercent >= 100) {
+    dashboardAlerts.push({
+      id: "budget-exceeded",
+      title: "Budget bulanan terlampaui",
+      message: `Pengeluaran bulan ini melebihi budget sebesar ${formatRupiah(Math.abs(budgetRemaining))}.`,
+      action: "Lihat transaksi",
+      href: "/transactions",
+      tone: "danger",
+    });
+  } else if (!loadingTransactions && !error && budgetPercent >= 80) {
+    dashboardAlerts.push({
+      id: "budget-near-limit",
+      title: "Budget mendekati batas",
+      message: `${budgetPercent}% budget bulanan sudah terpakai.`,
+      action: "Lihat transaksi",
+      href: "/transactions",
+      tone: "warning",
+    });
+  }
 
   // =====================================================
   // RENDER
@@ -313,12 +502,21 @@ export default function DashboardPage() {
           </span>
         </div>
 
-        <button
-          onClick={() => setShowProfile(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#171717] bg-[#7c5cff] text-sm font-black text-white"
-        >
-          {initials}
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationCenter
+            alerts={dashboardAlerts}
+            loading={loadingTransactions}
+            unavailable={Boolean(error)}
+            mobile
+            onNavigate={(href) => router.push(href)}
+          />
+          <button
+            onClick={() => setShowProfile(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#171717] bg-[#7c5cff] text-sm font-black text-white"
+          >
+            {initials}
+          </button>
+        </div>
       </header>
 
       <div className="flex min-h-screen">
@@ -365,9 +563,12 @@ export default function DashboardPage() {
 
               <div className="hidden items-center gap-3 sm:flex">
 
-                <button className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-[#171717] bg-white transition hover:-translate-y-1 hover:shadow-[3px_3px_0_#c8ff00]">
-                  <Bell size={18} />
-                </button>
+                <NotificationCenter
+                  alerts={dashboardAlerts}
+                  loading={loadingTransactions}
+                  unavailable={Boolean(error)}
+                  onNavigate={(href) => router.push(href)}
+                />
 
                 <button
                   onClick={() =>
