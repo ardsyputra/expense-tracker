@@ -131,7 +131,8 @@ export default function Sidebar() {
         {/* LOGOUT */}
         <button
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-white/50 transition hover:bg-[#ff6b6b] hover:text-[#171717]"
+          data-logout="sidebar"
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-white transition hover:bg-[#ff6b6b] hover:text-white"
         >
           <LogOut size={18} />
           Logout

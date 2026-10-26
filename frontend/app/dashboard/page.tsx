@@ -654,6 +654,7 @@ export default function DashboardPage() {
 
             <button
               onClick={handleLogout}
+              data-logout="dashboard"
               className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#171717] bg-[#ff6b6b] px-4 py-3 text-sm font-black transition hover:-translate-y-1 hover:shadow-[4px_4px_0_#171717]"
             >
               <LogOut size={17} />

@@ -49,6 +49,19 @@ body {
   color: #ffffff !important;
 }
 
+:root[data-theme="dark"] [data-logout="sidebar"] {
+  color: #ffffff !important;
+}
+
+:root[data-theme="dark"] [data-logout="sidebar"]:hover {
+  background-color: #8a2525 !important;
+}
+
+:root[data-theme="dark"] [data-logout="dashboard"] {
+  background-color: #8a2525 !important;
+  color: #ffffff !important;
+}
+
 :root[data-theme="dark"] [class~="text-[#171717]"] {
   color: #f4f4f5 !important;
 }
