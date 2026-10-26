@@ -48,6 +48,12 @@ type DashboardSummary = {
   balance: number;
 };
 
+type MonthlyBudget = {
+  amount: number;
+  monthly_expense: number;
+  configured: boolean;
+};
+
 export default function DashboardPage() {
   const router = useRouter();
 
@@ -57,6 +63,11 @@ export default function DashboardPage() {
     total_income: 0,
     total_expense: 0,
     balance: 0,
+  });
+  const [monthlyBudget, setMonthlyBudget] = useState<MonthlyBudget>({
+    amount: 0,
+    monthly_expense: 0,
+    configured: false,
   });
   const [loadingTransactions, setLoadingTransactions] = useState(true);
   const [error, setError] = useState("");
@@ -96,18 +107,32 @@ export default function DashboardPage() {
           }
         );
 
-        const result = await response.json();
-        const summaryResult = await summaryResponse.json();
+        const budgetResponse = await fetch(getApiUrl("/api/budget"), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
 
-        if (response.status === 401 || summaryResponse.status === 401) {
+        const [result, summaryResult, budgetResult] = await Promise.all([
+          response.json(),
+          summaryResponse.json(),
+          budgetResponse.json(),
+        ]);
+
+        if (
+          response.status === 401 ||
+          summaryResponse.status === 401 ||
+          budgetResponse.status === 401
+        ) {
           localStorage.removeItem("token");
           router.push("/login");
           return;
         }
 
-        if (!response.ok || !summaryResponse.ok) {
+        if (!response.ok || !summaryResponse.ok || !budgetResponse.ok) {
           throw new Error(
-            result.message || summaryResult.message ||
+            result.message || summaryResult.message || budgetResult.message ||
               "Gagal mengambil data transaksi"
           );
         }
@@ -118,6 +143,7 @@ export default function DashboardPage() {
 
         setTransactions(data);
         setSummary(summaryResult.data);
+        setMonthlyBudget(budgetResult.data);
       } catch (err) {
         console.error(
           "Fetch transactions error:",
@@ -201,13 +227,18 @@ export default function DashboardPage() {
   const totalIncome = summary.total_income;
   const totalExpense = summary.total_expense;
   const totalBalance = summary.balance;
+  const budgetPercent = monthlyBudget.configured && monthlyBudget.amount > 0
+    ? Math.round((monthlyBudget.monthly_expense / monthlyBudget.amount) * 100)
+    : 0;
+  const budgetProgress = Math.min(budgetPercent, 100);
+  const budgetRemaining = monthlyBudget.amount - monthlyBudget.monthly_expense;
 
   // =====================================================
   // RENDER
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#f5f1e8] text-[#171717]">
+    <main className="min-h-screen bg-[#f5f1e8] pb-24 text-[#171717] lg:pb-0">
 
       {/* MOBILE HEADER */}
       <header className="flex items-center justify-between border-b-2 border-[#171717] bg-white px-5 py-4 lg:hidden">
@@ -570,48 +601,69 @@ export default function DashboardPage() {
 
             </div>
 
-            {/* BUDGET */}
-            <div className="mt-6 rounded-[2rem] border-[3px] border-[#171717] bg-[#c8ff00] p-6 shadow-[5px_5px_0_#171717]">
-
+            {/* MONTHLY BUDGET */}
+            <section
+              aria-labelledby="monthly-budget-title"
+              className="mt-6 rounded-[2rem] border-[3px] border-[#171717] bg-[#c8ff00] p-6 shadow-[5px_5px_0_#171717]"
+            >
               <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-
                 <div>
                   <p className="text-xs font-black uppercase tracking-widest">
-                    Monthly budget
+                    Budget bulanan
                   </p>
-
-                  <h2 className="mt-1 text-2xl font-black tracking-tight">
-                    You&apos;re doing pretty good ✦
+                  <h2 id="monthly-budget-title" className="mt-1 text-2xl font-black tracking-tight">
+                    {monthlyBudget.configured
+                      ? budgetRemaining >= 0
+                        ? "Budget bulan ini"
+                        : "Budget terlampaui"
+                      : "Budget belum diatur"}
                   </h2>
-
-                  <p className="mt-1 text-sm font-medium opacity-60">
-                    {formatRupiah(totalExpense)} spent
+                  <p className="mt-1 text-sm font-medium">
+                    Pengeluaran bulan ini: {formatRupiah(monthlyBudget.monthly_expense)}
                   </p>
                 </div>
 
-                <div className="min-w-[220px]">
-
-                  <div className="mb-2 flex justify-between text-xs font-black">
-                    <span>
-                      {totalExpense > 0
-                        ? "68%"
-                        : "0%"}
-                    </span>
-
-                    <span>
-                      Monthly budget
-                    </span>
+                {monthlyBudget.configured ? (
+                  <div className="min-w-[220px] sm:max-w-xs sm:flex-1">
+                    <div className="mb-2 flex justify-between gap-4 text-xs font-black">
+                      <span>{budgetPercent}% terpakai</span>
+                      <span className="text-right">
+                        Budget {formatRupiah(monthlyBudget.amount)}
+                      </span>
+                    </div>
+                    <div
+                      role="progressbar"
+                      aria-label="Penggunaan budget bulanan"
+                      aria-valuemin={0}
+                      aria-valuemax={monthlyBudget.amount}
+                      aria-valuenow={Math.min(
+                        monthlyBudget.monthly_expense,
+                        monthlyBudget.amount
+                      )}
+                      className="h-4 overflow-hidden rounded-full border-2 border-[#171717] bg-white"
+                    >
+                      <div
+                        className={`h-full ${budgetPercent > 100 ? "bg-[#ff4f4f]" : "bg-[#7c5cff]"}`}
+                        style={{ width: `${budgetProgress}%` }}
+                      />
+                    </div>
+                    <p className="mt-2 text-right text-xs font-bold">
+                      {budgetRemaining >= 0
+                        ? `Sisa ${formatRupiah(budgetRemaining)}`
+                        : `Melebihi ${formatRupiah(Math.abs(budgetRemaining))}`}
+                    </p>
                   </div>
-
-                  <div className="h-4 overflow-hidden rounded-full border-2 border-[#171717] bg-white">
-                    <div className="h-full w-[68%] bg-[#7c5cff]" />
-                  </div>
-
-                </div>
-
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => router.push("/settings#monthly-budget")}
+                    className="rounded-xl border-2 border-[#171717] bg-[#171717] px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5"
+                  >
+                    Atur budget
+                  </button>
+                )}
               </div>
-
-            </div>
+            </section>
 
           </div>
         </section>

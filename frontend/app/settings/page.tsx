@@ -25,6 +25,8 @@ export default function SettingsPage() {
 
   const [name, setName] = useState("Ardiansyah");
   const [email, setEmail] = useState("");
+  const [budgetAmount, setBudgetAmount] = useState("");
+  const [budgetConfigured, setBudgetConfigured] = useState(false);
 
   const [darkMode, setDarkMode] = useState(false);
 
@@ -39,6 +41,7 @@ export default function SettingsPage() {
 
   const [loadingPassword, setLoadingPassword] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingBudget, setSavingBudget] = useState(false);
 
   // =====================================================
   // LOAD SETTINGS
@@ -78,6 +81,36 @@ export default function SettingsPage() {
     });
 
     return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    async function loadBudget() {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch(getApiUrl("/api/budget"), {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Gagal memuat budget bulanan.");
+        }
+
+        setBudgetConfigured(Boolean(result.data?.configured));
+        setBudgetAmount(
+          result.data?.configured ? String(result.data.amount) : ""
+        );
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Gagal memuat budget bulanan."
+        );
+      }
+    }
+
+    void loadBudget();
   }, []);
 
   // =====================================================
@@ -149,6 +182,80 @@ export default function SettingsPage() {
       setError(err instanceof Error ? err.message : "Gagal menyimpan profil.");
     } finally {
       setSavingProfile(false);
+    }
+  }
+
+  async function handleSaveBudget() {
+    setError("");
+    setMessage("");
+
+    const amount = Number(budgetAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setError("Masukkan budget bulanan lebih dari Rp 0.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    setSavingBudget(true);
+    try {
+      const response = await fetch(getApiUrl("/api/budget"), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Gagal menyimpan budget bulanan.");
+      }
+
+      setBudgetAmount(String(result.data.amount));
+      setBudgetConfigured(true);
+      setMessage("Budget bulanan berhasil disimpan.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal menyimpan budget.");
+    } finally {
+      setSavingBudget(false);
+    }
+  }
+
+  async function handleClearBudget() {
+    setError("");
+    setMessage("");
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    setSavingBudget(true);
+    try {
+      const response = await fetch(getApiUrl("/api/budget"), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Gagal menghapus budget bulanan.");
+      }
+
+      setBudgetAmount("");
+      setBudgetConfigured(false);
+      setMessage("Budget bulanan berhasil dihapus.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal menghapus budget.");
+    } finally {
+      setSavingBudget(false);
     }
   }
 
@@ -340,7 +447,7 @@ export default function SettingsPage() {
 
   return (
     <main
-      className={`flex min-h-screen transition-colors duration-300 ${pageBackground}`}
+      className={`flex min-h-screen pb-24 transition-colors duration-300 lg:pb-0 ${pageBackground}`}
     >
 
       {/* =================================================
@@ -455,6 +562,76 @@ export default function SettingsPage() {
           )}
 
           <div className="space-y-6">
+
+            <section
+              id="monthly-budget"
+              className={`scroll-mt-6 rounded-[2rem] border-[3px] border-[#171717] p-6 shadow-[5px_5px_0_#171717] transition-colors duration-300 sm:p-8 ${cardBackground}`}
+            >
+              <div className="mb-7">
+                <p className="text-xs font-black uppercase tracking-widest text-[#7c5cff]">
+                  Budget bulanan
+                </p>
+                <h3 className="mt-1 text-2xl font-black">
+                  Atur batas pengeluaran
+                </h3>
+                <p className={`mt-1 text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                  Budget hanya berlaku untuk akun ini dan digunakan untuk
+                  menghitung pengeluaran bulan berjalan.
+                </p>
+              </div>
+
+              <div className="max-w-md">
+                <label
+                  htmlFor="monthly-budget-amount"
+                  className="mb-2 block text-xs font-black uppercase tracking-wider"
+                >
+                  Budget per bulan (rupiah)
+                </label>
+                <input
+                  id="monthly-budget-amount"
+                  type="number"
+                  min="1"
+                  step="1000"
+                  inputMode="numeric"
+                  value={budgetAmount}
+                  onChange={(event) => setBudgetAmount(event.target.value)}
+                  placeholder="Contoh: 5000000"
+                  className={`w-full rounded-xl border-2 border-[#171717] px-4 py-3.5 text-sm font-bold outline-none transition focus:-translate-y-0.5 focus:bg-white focus:shadow-[4px_4px_0_#c8ff00] ${inputBackground}`}
+                />
+                {budgetConfigured && (
+                  <p className={`mt-2 text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                    Budget saat ini:{" "}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      maximumFractionDigits: 0,
+                    }).format(Number(budgetAmount))}
+                  </p>
+                )}
+              </div>
+
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                {budgetConfigured && (
+                  <button
+                    type="button"
+                    onClick={handleClearBudget}
+                    disabled={savingBudget}
+                    className={`rounded-xl border-2 border-[#171717] px-5 py-3 text-sm font-black transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${darkMode ? "bg-[#252525] text-white" : "bg-white text-[#171717]"}`}
+                  >
+                    Hapus budget
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSaveBudget}
+                  disabled={savingBudget}
+                  className="flex items-center justify-center gap-2 rounded-xl border-2 border-[#171717] bg-[#171717] px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#c8ff00] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Save size={17} />
+                  {savingBudget ? "Menyimpan..." : "Simpan budget"}
+                </button>
+              </div>
+            </section>
 
             {/* =================================================
                 PROFILE

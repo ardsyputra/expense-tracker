@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -77,6 +76,7 @@ func main() {
 	routes.CategoryRoutes(r)
 	routes.TransactionRoutes(r)
 	routes.DashboardRoutes(r)
+	routes.BudgetRoutes(r)
 
 	// =========================
 	// ROOT

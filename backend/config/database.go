@@ -31,8 +31,8 @@ func ConnectDatabase() {
 
 	// PostgreSQL DSN
 	dsn := fmt.Sprintf(
-    "host=%s user=%s password=%s dbname=%s port=%s sslmode=require",
-    host, user, password, dbname, port,
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=require",
+		host, user, password, dbname, port,
 	)
 
 	// Connect database
@@ -51,6 +51,7 @@ func ConnectDatabase() {
 		&models.User{},
 		&models.Category{},
 		&models.Transaction{},
+		&models.Budget{},
 	)
 
 	if err != nil {
