@@ -44,7 +44,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f5f1e8] px-5 py-8 text-[#171717]">
+    <main
+      data-auth-form
+      className="relative min-h-screen overflow-hidden bg-[#f5f1e8] px-5 py-8 text-[#171717]"
+    >
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-[#c8ff00]"

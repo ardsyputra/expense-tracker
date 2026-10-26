@@ -70,6 +70,10 @@ body {
   color: #d4d4d8 !important;
 }
 
+:root[data-theme="dark"] [data-auth-form] [class~="text-[#7c5cff]"] {
+  color: #b6a5ff !important;
+}
+
 :root[data-theme="dark"] [class~="placeholder:text-gray-400"]::placeholder {
   color: #a1a1aa !important;
 }
