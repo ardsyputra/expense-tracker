@@ -90,6 +90,7 @@ export default function RegisterPage() {
           {registered ? (
             <div
               role="status"
+              data-registration-success
               className="rounded-xl border-2 border-[#171717] bg-[#c8ff00] p-5"
             >
               <p className="font-black">Akun berhasil dibuat.</p>

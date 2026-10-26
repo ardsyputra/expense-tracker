@@ -44,6 +44,11 @@ body {
   color: #171717 !important;
 }
 
+:root[data-theme="dark"] [data-registration-success] a {
+  background-color: #171717 !important;
+  color: #ffffff !important;
+}
+
 :root[data-theme="dark"] [class~="text-[#171717]"] {
   color: #f4f4f5 !important;
 }
