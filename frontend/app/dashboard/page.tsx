@@ -463,16 +463,33 @@ export default function DashboardPage() {
       href: "/settings#monthly-budget",
       tone: "warning",
     });
-  } else if (!loadingTransactions && !error && budgetPercent >= 100) {
+  } else if (
+    !loadingTransactions &&
+    !error &&
+    monthlyBudget.monthly_expense >= monthlyBudget.amount
+  ) {
     dashboardAlerts.push({
       id: "budget-exceeded",
-      title: "Budget bulanan terlampaui",
-      message: `Pengeluaran bulan ini melebihi budget sebesar ${formatRupiah(Math.abs(budgetRemaining))}.`,
+      title:
+        monthlyBudget.monthly_expense > monthlyBudget.amount
+          ? "Budget bulanan terlampaui"
+          : "Budget bulanan tercapai",
+      message:
+        monthlyBudget.monthly_expense > monthlyBudget.amount
+          ? `Pengeluaran bulan ini melebihi budget sebesar ${formatRupiah(Math.abs(budgetRemaining))}.`
+          : "Pengeluaran bulan ini sudah mencapai batas budget.",
       action: "Lihat transaksi",
       href: "/transactions",
-      tone: "danger",
+      tone:
+        monthlyBudget.monthly_expense > monthlyBudget.amount
+          ? "danger"
+          : "warning",
     });
-  } else if (!loadingTransactions && !error && budgetPercent >= 80) {
+  } else if (
+    !loadingTransactions &&
+    !error &&
+    monthlyBudget.monthly_expense >= monthlyBudget.amount * 0.8
+  ) {
     dashboardAlerts.push({
       id: "budget-near-limit",
       title: "Budget mendekati batas",
