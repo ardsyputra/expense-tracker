@@ -58,6 +58,7 @@ export default function DashboardPage() {
   const router = useRouter();
 
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
+  const [displayName, setDisplayName] = useState("Akun");
   const [showProfile, setShowProfile] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<DashboardSummary>({
@@ -80,6 +81,57 @@ export default function DashboardPage() {
     const interval = window.setInterval(updateCurrentDate, 60_000);
     return () => window.clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    let active = true;
+
+    async function loadProfile() {
+      try {
+        const response = await fetch(getApiUrl("/api/profile"), {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const result = await response.json();
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          router.push("/login");
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(result.message || "Gagal memuat profil akun.");
+        }
+
+        const name =
+          typeof result.data?.name === "string"
+            ? result.data.name.trim()
+            : "";
+        if (active && name) {
+          setDisplayName(name);
+          localStorage.setItem("user_name", name);
+        }
+      } catch (err) {
+        console.error("Load dashboard profile error:", err);
+      }
+    }
+
+    void loadProfile();
+
+    return () => {
+      active = false;
+    };
+  }, [router]);
+
+  const initials =
+    displayName
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0].toLocaleUpperCase())
+      .join("") || "A";
 
   // =====================================================
   // FETCH TRANSACTIONS
@@ -265,7 +317,7 @@ export default function DashboardPage() {
           onClick={() => setShowProfile(true)}
           className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#171717] bg-[#7c5cff] text-sm font-black text-white"
         >
-          AP
+          {initials}
         </button>
       </header>
 
@@ -302,7 +354,7 @@ export default function DashboardPage() {
                 </p>
 
                 <h1 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">
-                  Hey, Ardiansyah
+                  Hey, {displayName}
                   <span className="ml-2">✦</span>
                 </h1>
 
@@ -324,12 +376,12 @@ export default function DashboardPage() {
                   className="flex items-center gap-3 rounded-xl border-2 border-[#171717] bg-white px-3 py-2 transition hover:-translate-y-1 hover:shadow-[3px_3px_0_#7c5cff]"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#7c5cff] text-xs font-black text-white">
-                    AP
+                    {initials}
                   </div>
 
                   <div className="text-left">
                     <p className="text-xs font-black">
-                      Ardiansyah
+                      {displayName}
                     </p>
 
                     <p className="text-[10px] text-gray-400">
@@ -700,11 +752,11 @@ export default function DashboardPage() {
               <div>
 
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#171717] bg-[#7c5cff] text-lg font-black text-white">
-                  AP
+                  {initials}
                 </div>
 
                 <h2 className="text-2xl font-black">
-                  Ardiansyah
+                  {displayName}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-400">
