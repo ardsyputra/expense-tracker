@@ -603,6 +603,7 @@ export default function DashboardPage() {
 
             {/* MONTHLY BUDGET */}
             <section
+              data-monthly-budget
               aria-labelledby="monthly-budget-title"
               className="mt-6 rounded-[2rem] border-[3px] border-[#171717] bg-[#c8ff00] p-6 shadow-[5px_5px_0_#171717]"
             >

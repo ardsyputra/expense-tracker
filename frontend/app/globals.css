@@ -44,6 +44,15 @@ body {
   color: #171717 !important;
 }
 
+:root[data-theme="dark"] [data-monthly-budget][class~="bg-[#c8ff00]"] {
+  background-color: #1c1f22 !important;
+  color: #f4f4f5 !important;
+}
+
+:root[data-theme="dark"] [data-monthly-budget][class~="bg-[#c8ff00]"] * {
+  color: #f4f4f5 !important;
+}
+
 :root[data-theme="dark"] [data-registration-success] a {
   background-color: #171717 !important;
   color: #ffffff !important;
