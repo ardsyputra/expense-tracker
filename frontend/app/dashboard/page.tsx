@@ -37,6 +37,7 @@ type Transaction = {
   description?: string;
   amount: number;
   type: string;
+  date?: string;
 
   category?: Category | null;
   category_id?: number;
@@ -405,8 +406,7 @@ export default function DashboardPage() {
       day: "2-digit",
       month: "short",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      timeZone: "Asia/Jakarta",
     }).format(parsedDate);
   }
 
@@ -815,7 +815,8 @@ export default function DashboardPage() {
                                       "Uncategorized"}{" "}
                                     ·{" "}
                                     {formatDate(
-                                      transaction.CreatedAt
+                                      transaction.date ??
+                                        transaction.CreatedAt
                                     )}
                                   </p>
 

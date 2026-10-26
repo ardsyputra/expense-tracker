@@ -179,8 +179,7 @@ export default function PageTransaction() {
       day: "2-digit",
       month: "short",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      timeZone: "Asia/Jakarta",
     }).format(parsedDate);
   }
 
