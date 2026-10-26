@@ -937,6 +937,7 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={handleLogout}
+                  data-logout="settings"
                   className="flex items-center justify-center gap-2 rounded-xl border-2 border-[#171717] bg-white px-5 py-3 text-sm font-black transition hover:-translate-y-1 hover:shadow-[4px_4px_0_#171717]"
                 >
 
