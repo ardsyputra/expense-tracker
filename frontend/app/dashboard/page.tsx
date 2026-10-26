@@ -57,6 +57,7 @@ type MonthlyBudget = {
 export default function DashboardPage() {
   const router = useRouter();
 
+  const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<DashboardSummary>({
@@ -71,6 +72,14 @@ export default function DashboardPage() {
   });
   const [loadingTransactions, setLoadingTransactions] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const updateCurrentDate = () => setCurrentDate(new Date());
+    updateCurrentDate();
+
+    const interval = window.setInterval(updateCurrentDate, 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   // =====================================================
   // FETCH TRANSACTIONS
@@ -279,7 +288,17 @@ export default function DashboardPage() {
             <div className="mb-10 flex items-center justify-between">
               <div>
                 <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-[#7c5cff]">
-                  Wednesday · August 5, 2026
+                  {currentDate
+                    ? new Intl.DateTimeFormat("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                        timeZone: "Asia/Jakarta",
+                      })
+                        .format(currentDate)
+                        .replace(",", " ·")
+                    : ""}
                 </p>
 
                 <h1 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">
