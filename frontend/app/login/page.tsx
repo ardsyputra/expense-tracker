@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
 
@@ -254,6 +255,16 @@ return ( <main className="relative min-h-screen overflow-hidden bg-[#f5f1e8] px-
 
         <p className="mt-6 text-center text-xs text-gray-400">
           Expense Tracker · Keep your spending in check ✦
+        </p>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Belum punya akun?{" "}
+          <Link
+            href="/register"
+            className="font-black text-[#7c5cff] hover:underline"
+          >
+            Buat akun
+          </Link>
         </p>
 
       </section>
