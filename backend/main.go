@@ -48,16 +48,22 @@ func main() {
 	// CORS
 	// =========================
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
-	if allowedOrigins == "" {
-		allowedOrigins = strings.Join([]string{
-			"http://localhost:3000",
-			"https://expense-tracker-6hf2tkfxd-putras-projects-cfb47d66.vercel.app",
-		}, ",")
+	origins := []string{
+		"http://localhost:3000",
+		"https://expense-tracker-6hf2tkfxd-putras-projects-cfb47d66.vercel.app",
 	}
-
-	origins := make([]string, 0)
 	for _, origin := range strings.Split(allowedOrigins, ",") {
 		if origin = strings.TrimSpace(origin); origin != "" {
+			alreadyIncluded := false
+			for _, existing := range origins {
+				if existing == origin {
+					alreadyIncluded = true
+					break
+				}
+			}
+			if alreadyIncluded {
+				continue
+			}
 			origins = append(origins, origin)
 		}
 	}
