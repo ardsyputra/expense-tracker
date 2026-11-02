@@ -427,8 +427,8 @@ export default function CategoriesPage() {
         <Sidebar />
 
         <div className="min-w-0 flex-1">
-          <header className="border-b-2 border-[#171717] bg-white">
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
+          <header className="sticky top-0 z-40 border-b border-[#171717]/10 bg-white/95 backdrop-blur-xl lg:relative lg:border-b-2 lg:border-[#171717]">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-8 sm:py-5 lg:px-10">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#7c5cff]">
                   Finance

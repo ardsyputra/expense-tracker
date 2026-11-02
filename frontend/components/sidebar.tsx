@@ -17,14 +17,6 @@ type MonthlyBudget = {
   configured: boolean;
 };
 
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -90,7 +82,7 @@ export default function Sidebar() {
 
   return (
     <Fragment>
-    <aside className="hidden w-[250px] shrink-0 border-r-2 border-[#171717] bg-[#171717] p-5 text-white lg:flex lg:flex-col">
+    <aside className="sticky top-0 hidden h-screen w-[250px] shrink-0 border-r-2 border-[#171717] bg-[#171717] p-5 text-white lg:flex lg:flex-col">
 
       {/* LOGO */}
       <div className="mb-12 flex items-center gap-3">
@@ -169,45 +161,6 @@ export default function Sidebar() {
       {/* BOTTOM */}
       <div className="mt-auto">
 
-        {/* MONTHLY BUDGET */}
-        <div className="mb-5 rounded-2xl border-2 border-white/10 bg-white/5 p-4">
-          <p className="text-[10px] font-black uppercase tracking-widest text-white/40">
-            Budget bulan ini
-          </p>
-
-          {budgetLoading ? (
-            <p className="mt-2 text-xs text-white/60">Memuat ringkasan...</p>
-          ) : budgetError ? (
-            <p role="status" className="mt-2 text-xs text-white">
-              Ringkasan budget gagal dimuat.
-            </p>
-          ) : monthlyBudget?.configured ? (
-            <>
-              <p className="mt-2 text-sm font-bold">
-                {formatRupiah(monthlyBudget.monthly_expense)} / {formatRupiah(monthlyBudget.amount)}
-              </p>
-              <p className="mt-1 text-xs text-white/60">
-                {monthlyBudget.amount >= monthlyBudget.monthly_expense
-                  ? `Sisa ${formatRupiah(monthlyBudget.amount - monthlyBudget.monthly_expense)}`
-                  : `Melebihi ${formatRupiah(monthlyBudget.monthly_expense - monthlyBudget.amount)}`}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="mt-2 text-sm font-bold">
-                {formatRupiah(monthlyBudget?.monthly_expense ?? 0)} terpakai
-              </p>
-              <button
-                type="button"
-                onClick={() => router.push("/settings#monthly-budget")}
-                className="mt-1 text-left text-xs font-bold text-[#c8ff00] hover:underline"
-              >
-                Atur budget di Settings
-              </button>
-            </>
-          )}
-        </div>
-
         {/* LOGOUT */}
         <button
           onClick={handleLogout}
@@ -223,7 +176,7 @@ export default function Sidebar() {
     <nav
       data-mobile-nav
       aria-label="Main navigation"
-      className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t-2 border-[#171717] bg-white px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-[0_-4px_14px_rgba(0,0,0,0.12)] lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-[#171717]/10 bg-white/95 px-2 pb-[max(env(safe-area-inset-bottom),0.35rem)] pt-2 backdrop-blur-xl shadow-[0_-8px_24px_rgba(23,23,23,0.10)] transition-all lg:hidden"
     >
       {navigationItems.map(({ path, label, icon: Icon }) => {
         const active = path === "/dashboard"
@@ -236,7 +189,7 @@ export default function Sidebar() {
             type="button"
             aria-current={active ? "page" : undefined}
             onClick={() => router.push(path)}
-            className={`flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-1 text-[10px] font-bold ${
+            className={`flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1 text-[10px] font-bold transition-all duration-200 active:scale-95 ${
               active
                 ? "bg-[#c8ff00] text-[#171717]"
                 : "text-gray-500"

@@ -508,7 +508,7 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-[#f5f1e8] pb-24 text-[#171717] lg:pb-0">
 
       {/* MOBILE HEADER */}
-      <header className="flex items-center justify-between border-b-2 border-[#171717] bg-white px-5 py-4 lg:hidden">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#171717]/10 bg-white/95 px-5 py-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 rotate-[-6deg] items-center justify-center rounded-xl border-2 border-[#171717] bg-[#c8ff00] font-black shadow-[3px_3px_0_#171717]">
             $
@@ -545,14 +545,14 @@ export default function DashboardPage() {
         <section className="relative flex-1 overflow-hidden">
 
           {/* DECORATION */}
-          <div className="pointer-events-none absolute right-[-70px] top-[-70px] h-52 w-52 rounded-full bg-[#c8ff00]" />
+          <div className="pointer-events-none absolute right-[-70px] top-[-70px] hidden h-52 w-52 rounded-full bg-[#c8ff00] sm:block" />
 
-          <div className="pointer-events-none absolute bottom-[-90px] right-[15%] h-52 w-52 rounded-full border-[20px] border-[#7c5cff]" />
+          <div className="pointer-events-none absolute bottom-[-90px] right-[15%] hidden h-52 w-52 rounded-full border-[20px] border-[#7c5cff] sm:block" />
 
-          <div className="relative mx-auto max-w-7xl p-5 sm:p-8 lg:p-10">
+          <div className="relative mx-auto max-w-7xl px-4 py-5 sm:p-8 lg:p-10">
 
             {/* TOP BAR */}
-            <div className="mb-10 flex items-center justify-between">
+            <div className="mb-6 flex items-center justify-between sm:mb-10">
               <div>
                 <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-[#7c5cff]">
                   {currentDate
@@ -568,7 +568,7 @@ export default function DashboardPage() {
                     : ""}
                 </p>
 
-                <h1 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">
+                <h1 className="text-3xl font-black tracking-[-0.04em] sm:text-5xl">
                   Hey, {displayName}
                   <span className="ml-2">✦</span>
                 </h1>
@@ -620,9 +620,9 @@ export default function DashboardPage() {
             )}
 
             {/* BALANCE */}
-            <div className="mb-6 grid gap-5 lg:grid-cols-[1.5fr_1fr_1fr]">
+            <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-[1.5fr_1fr_1fr]">
 
-              <div className="relative overflow-hidden rounded-[2rem] border-[3px] border-[#171717] bg-[#171717] p-7 text-white shadow-[7px_7px_0_#7c5cff]">
+              <div className="relative col-span-2 overflow-hidden rounded-[1.5rem] border-[3px] border-[#171717] bg-[#171717] p-5 text-white shadow-[5px_5px_0_#7c5cff] sm:rounded-[2rem] sm:p-7 lg:col-span-1 lg:shadow-[7px_7px_0_#7c5cff]">
 
                 <div className="absolute right-[-30px] top-[-40px] h-32 w-32 rounded-full bg-[#c8ff00]" />
 
@@ -639,7 +639,7 @@ export default function DashboardPage() {
                     />
                   </div>
 
-                  <p className="mt-5 text-4xl font-black tracking-[-0.05em] sm:text-5xl">
+                  <p className="mt-4 text-3xl font-black tracking-[-0.05em] sm:text-5xl">
                     {formatRupiah(totalBalance)}
                   </p>
 
@@ -657,7 +657,7 @@ export default function DashboardPage() {
               </div>
 
               {/* INCOME */}
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-[#c8ff00] p-6 shadow-[5px_5px_0_#171717]">
+              <div className="rounded-[1.5rem] border-[3px] border-[#171717] bg-[#c8ff00] p-4 shadow-[4px_4px_0_#171717] sm:p-6 sm:shadow-[5px_5px_0_#171717]">
 
                 <div className="flex items-center justify-between">
 
@@ -671,7 +671,7 @@ export default function DashboardPage() {
 
                 </div>
 
-                <p className="mt-7 text-2xl font-black tracking-tight">
+                <p className="mt-5 text-base font-black tracking-tight sm:mt-7 sm:text-2xl">
                   {formatRupiah(totalIncome)}
                 </p>
 
@@ -682,7 +682,7 @@ export default function DashboardPage() {
               </div>
 
               {/* EXPENSE */}
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-[#ff6b6b] p-6 shadow-[5px_5px_0_#171717]">
+              <div className="rounded-[1.5rem] border-[3px] border-[#171717] bg-[#ff6b6b] p-4 shadow-[4px_4px_0_#171717] sm:p-6 sm:shadow-[5px_5px_0_#171717]">
 
                 <div className="flex items-center justify-between">
 
@@ -696,7 +696,7 @@ export default function DashboardPage() {
 
                 </div>
 
-                <p className="mt-7 text-2xl font-black tracking-tight">
+                <p className="mt-5 text-base font-black tracking-tight sm:mt-7 sm:text-2xl">
                   {formatRupiah(totalExpense)}
                 </p>
 
@@ -709,23 +709,24 @@ export default function DashboardPage() {
             </div>
 
             {/* CONTENT GRID */}
-            <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
+            <div className="grid gap-6">
 
               {/* TRANSACTIONS */}
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-white p-6 shadow-[5px_5px_0_#171717]">
+              <div className="rounded-[1.5rem] border-[3px] border-[#171717] bg-white p-4 shadow-[4px_4px_0_#171717] sm:p-6 sm:shadow-[5px_5px_0_#171717]">
 
-                <div className="mb-6 flex items-center justify-between">
+                <div className="mb-5 flex items-center justify-between gap-3 sm:mb-6">
 
                   <div>
                     <p className="text-xs font-black uppercase tracking-widest text-[#7c5cff]">
                       Activity
                     </p>
 
-                    <h2 className="mt-1 text-2xl font-black tracking-tight">
+                    <h2 className="mt-1 text-xl font-black tracking-tight sm:text-2xl">
                       Recent transactions
                     </h2>
                   </div>
 
+                  <div className="flex items-center gap-3">
                   <button
                     onClick={() =>
                       router.push("/transactions")
@@ -734,6 +735,14 @@ export default function DashboardPage() {
                   >
                     View all
                   </button>
+                  <button
+                    onClick={() => router.push("/transactions/tambahtransaction")}
+                    className="flex items-center gap-2 rounded-xl border-2 border-[#171717] bg-[#c8ff00] px-3 py-2 text-xs font-black transition hover:-translate-y-1 hover:shadow-[3px_3px_0_#171717]"
+                  >
+                    <Plus size={15} />
+                    Add
+                  </button>
+                  </div>
 
                 </div>
 
@@ -764,6 +773,13 @@ export default function DashboardPage() {
                       <p className="mt-1 text-xs text-gray-400">
                         Tambahkan transaksi pertama kamu.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => router.push("/transactions/tambahtransaction")}
+                        className="mt-4 rounded-xl border-2 border-[#171717] bg-[#171717] px-4 py-2 text-xs font-black text-white"
+                      >
+                        + Add transaction
+                      </button>
 
                     </div>
                   )}
@@ -846,46 +862,6 @@ export default function DashboardPage() {
 
                     </div>
                   )}
-
-              </div>
-
-              {/* QUICK ADD */}
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-[#7c5cff] p-6 text-white shadow-[5px_5px_0_#171717]">
-
-                <div className="flex items-start justify-between">
-
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-widest text-white/50">
-                      Quick action
-                    </p>
-
-                    <h2 className="mt-2 text-3xl font-black leading-none tracking-tight">
-                      Add
-                      <br />
-                      transaction.
-                    </h2>
-                  </div>
-
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-[#171717] bg-[#c8ff00] text-[#171717]">
-                    <Plus size={22} />
-                  </div>
-
-                </div>
-
-                <p className="mt-6 text-sm leading-6 text-white/60">
-                  Catat pemasukan atau pengeluaran baru sebelum lupa.
-                </p>
-
-                <button
-                  onClick={() =>
-                    router.push(
-                      "/transactions/tambahtransaction"
-                    )
-                  }
-                  className="mt-8 w-full rounded-xl border-2 border-[#171717] bg-white px-4 py-3 text-sm font-black text-[#171717] transition hover:-translate-y-1 hover:shadow-[4px_4px_0_#c8ff00]"
-                >
-                  + Add transaction
-                </button>
 
               </div>
 

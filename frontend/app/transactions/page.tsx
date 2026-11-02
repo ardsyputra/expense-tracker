@@ -52,6 +52,8 @@ export default function PageTransaction() {
 
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const [filterMonth, setFilterMonth] = useState("all");
+  const [filterYear, setFilterYear] = useState("all");
 
   // =====================================================
   // FETCH TRANSACTIONS
@@ -187,6 +189,14 @@ export default function PageTransaction() {
   // FILTER TRANSACTIONS
   // =====================================================
 
+  const availableYears = useMemo(() => {
+    const years = transactions
+      .map((transaction) => transaction.date?.slice(0, 4))
+      .filter((year): year is string => Boolean(year));
+
+    return Array.from(new Set(years)).sort((a, b) => b.localeCompare(a));
+  }, [transactions]);
+
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
       const keyword = search
@@ -213,15 +223,27 @@ export default function PageTransaction() {
         normalizedType ===
           filterType.toLowerCase();
 
+      const dateKey = transaction.date?.slice(0, 7) ?? "";
+      const matchesMonth =
+        filterMonth === "all" ||
+        dateKey.slice(5, 7) === filterMonth;
+      const matchesYear =
+        filterYear === "all" ||
+        dateKey.slice(0, 4) === filterYear;
+
       return (
         matchesSearch &&
-        matchesType
+        matchesType &&
+        matchesMonth &&
+        matchesYear
       );
     });
   }, [
     transactions,
     search,
     filterType,
+    filterMonth,
+    filterYear,
   ]);
 
   // =====================================================
@@ -393,9 +415,9 @@ export default function PageTransaction() {
               HEADER
           ================================================= */}
 
-          <header className="border-b-2 border-[#171717] bg-white">
+          <header className="sticky top-0 z-40 border-b border-[#171717]/10 bg-white/95 backdrop-blur-xl lg:relative lg:border-b-2 lg:border-[#171717]">
 
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-8 sm:py-5 lg:px-10">
 
               {/* PAGE TITLE */}
 
@@ -437,17 +459,17 @@ export default function PageTransaction() {
               CONTENT
           ================================================= */}
 
-          <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10">
+          <div className="mx-auto max-w-7xl px-4 py-5 sm:px-8 sm:py-8 lg:px-10">
 
             {/* =================================================
                 SUMMARY
             ================================================= */}
 
-            <div className="mb-6 grid gap-5 md:grid-cols-3">
+            <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
 
               {/* TOTAL TRANSACTIONS */}
 
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-[#171717] p-6 text-white shadow-[5px_5px_0_#7c5cff]">
+              <div className="col-span-2 rounded-[1.5rem] border-[3px] border-[#171717] bg-[#171717] p-5 text-white shadow-[4px_4px_0_#7c5cff] sm:p-6 md:col-span-1 sm:shadow-[5px_5px_0_#7c5cff]">
 
                 <div className="flex items-center justify-between">
 
@@ -474,7 +496,7 @@ export default function PageTransaction() {
 
               {/* INCOME */}
 
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-[#c8ff00] p-6 shadow-[5px_5px_0_#171717]">
+              <div className="rounded-[1.5rem] border-[3px] border-[#171717] bg-[#c8ff00] p-4 shadow-[4px_4px_0_#171717] sm:p-6 sm:shadow-[5px_5px_0_#171717]">
 
                 <div className="flex items-center justify-between">
 
@@ -492,7 +514,7 @@ export default function PageTransaction() {
 
                 </div>
 
-                <p className="mt-5 text-2xl font-black">
+                <p className="mt-4 text-base font-black sm:mt-5 sm:text-2xl">
                   {formatRupiah(
                     totalIncome
                   )}
@@ -506,7 +528,7 @@ export default function PageTransaction() {
 
               {/* EXPENSE */}
 
-              <div className="rounded-[2rem] border-[3px] border-[#171717] bg-[#ff6b6b] p-6 shadow-[5px_5px_0_#171717]">
+              <div className="rounded-[1.5rem] border-[3px] border-[#171717] bg-[#ff6b6b] p-4 shadow-[4px_4px_0_#171717] sm:p-6 sm:shadow-[5px_5px_0_#171717]">
 
                 <div className="flex items-center justify-between">
 
@@ -524,7 +546,7 @@ export default function PageTransaction() {
 
                 </div>
 
-                <p className="mt-5 text-2xl font-black">
+                <p className="mt-4 text-base font-black sm:mt-5 sm:text-2xl">
                   {formatRupiah(
                     totalExpense
                   )}
@@ -542,7 +564,7 @@ export default function PageTransaction() {
                 FILTER
             ================================================= */}
 
-            <div className="mb-6 rounded-[2rem] border-[3px] border-[#171717] bg-white p-5 shadow-[5px_5px_0_#171717]">
+            <div className="mb-6 rounded-[1.5rem] border-[3px] border-[#171717] bg-white p-4 shadow-[4px_4px_0_#171717] sm:p-5 sm:shadow-[5px_5px_0_#171717]">
 
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
@@ -571,7 +593,41 @@ export default function PageTransaction() {
 
                 {/* FILTER BUTTONS */}
 
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                  <select
+                    aria-label="Filter bulan"
+                    value={filterMonth}
+                    onChange={(event) => setFilterMonth(event.target.value)}
+                    className="w-full rounded-xl border-2 border-[#171717] bg-white px-3 py-2 text-xs font-black outline-none sm:w-auto"
+                  >
+                    <option value="all">Semua bulan</option>
+                    <option value="01">Januari</option>
+                    <option value="02">Februari</option>
+                    <option value="03">Maret</option>
+                    <option value="04">April</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Juni</option>
+                    <option value="07">Juli</option>
+                    <option value="08">Agustus</option>
+                    <option value="09">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                  </select>
+
+                  <select
+                    aria-label="Filter tahun"
+                    value={filterYear}
+                    onChange={(event) => setFilterYear(event.target.value)}
+                    className="w-full rounded-xl border-2 border-[#171717] bg-white px-3 py-2 text-xs font-black outline-none sm:w-auto"
+                  >
+                    <option value="all">Semua tahun</option>
+                    {availableYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
 
                   {/* ALL */}
 
@@ -637,7 +693,7 @@ export default function PageTransaction() {
                 TRANSACTION LIST
             ================================================= */}
 
-            <div className="rounded-[2rem] border-[3px] border-[#171717] bg-white p-5 shadow-[5px_5px_0_#171717] sm:p-6">
+            <div className="rounded-[1.5rem] border-[3px] border-[#171717] bg-white p-4 shadow-[4px_4px_0_#171717] sm:p-6 sm:shadow-[5px_5px_0_#171717]">
 
               {/* HEADER LIST */}
 

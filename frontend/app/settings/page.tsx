@@ -463,7 +463,7 @@ export default function SettingsPage() {
         ================================================= */}
 
         <header
-          className={`border-b-2 border-[#171717] transition-colors duration-300 ${
+          className={`sticky top-0 z-40 border-b border-[#171717]/10 backdrop-blur-xl transition-colors duration-300 lg:relative lg:border-b-2 lg:border-[#171717] ${
             darkMode
               ? "bg-[#1c1c1c]"
               : "bg-white"

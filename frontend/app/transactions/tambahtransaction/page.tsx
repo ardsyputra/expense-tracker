@@ -289,7 +289,7 @@ export default function NewTransactionPage() {
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#f5f1e8] px-5 py-8 text-[#171717]">
+    <main className="min-h-screen bg-[#f5f1e8] px-4 py-5 pb-8 text-[#171717] sm:px-5 sm:py-8">
 
       {/* =================================================
           BACK BUTTON
@@ -302,7 +302,7 @@ export default function NewTransactionPage() {
           onClick={() =>
             router.push("/transactions")
           }
-          className="mb-8 flex items-center gap-2 rounded-xl border-2 border-[#171717] bg-white px-4 py-2.5 text-sm font-black transition hover:-translate-y-1 hover:shadow-[4px_4px_0_#c8ff00]"
+          className="mb-5 flex items-center gap-2 rounded-xl border-2 border-[#171717] bg-white px-4 py-2.5 text-sm font-black transition active:scale-[0.98] hover:-translate-y-1 hover:shadow-[4px_4px_0_#c8ff00] sm:mb-8"
         >
           <ArrowLeft size={17} />
           Back to Transactions
