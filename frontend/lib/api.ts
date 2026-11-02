@@ -1,8 +1,8 @@
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ||
   (process.env.NODE_ENV === "development"
-    ? "http://localhost:8081"
-    : "");
+    ? "http://localhost:8080"
+    : "https://expense-tracker-api.hostless.app");
 
 export function getApiUrl(endpoint: string) {
   if (!API_URL) {
